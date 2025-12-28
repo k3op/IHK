@@ -61,6 +61,8 @@ input:out-of-range {
 
 <h3>Rechner zur Niederschrift der Abschlussprüfung</h3>
 
+<button onclick="clearInputs()">Alle Eingaben leeren</button>
+
 <table>
 <tr>
     <th>Legende</th>
@@ -528,6 +530,9 @@ bewertet worden sind.
 </tr>
 </table>
 
+
+<p>Diese Webseite ist vollständig eigenständig (es werden keine externen JavaScript- oder CSS-Dateien geladen). Die auf dieser Seite eingegebenen Informationen verlassen Ihren Computer NICHT. Für zusätzliche Sicherheit können Sie diese Seite auf Ihrem Computer speichern oder Ihre eigene Kopie von <a href="https://github.com/k3op/ihk" target="_blank">https://github.com/k3op/ihk</a> abrufen.</p>
+
 <script>
 function roundup(x) {
     return Math.ceil(x);
@@ -806,6 +811,12 @@ function noteFromPunkte(Punkte) {
 }
 
 
+
+function clearInputs() {
+    document.querySelectorAll('td.input input').forEach(input => input.value = '');
+    recalc();
+	recalcTeil2();
+}
 
 ["PI1","PI2","PI3","PI4","PI5","PI6","T3","T4","T5","T7","T8","T9"].forEach(id =>
     document.getElementById(id).addEventListener("input", recalc)
