@@ -229,12 +229,6 @@
 
                 <label for="p1Dur">Dauer der Präsentation</label>
                 <input id="p1Dur" type="text" placeholder="z. B. 15:00" title="Beispiel: 15:00, 15.00, 1:00" />
-
-                <label for="p2Start">Beginn des Fachgespräches</label>
-                <input id="p2Start" type="time" />
-
-                <label for="p2Dur">Dauer des Fachgespräches</label>
-                <input id="p2Dur" type="text" placeholder="z. B. 15:00" />
             </div>
             <div class="small no-print" style="margin-top:8px;">
                 Diese Felder werden beim JSON-Export nicht gespeichert.
@@ -396,7 +390,6 @@
         <div class="small">Eine Fragenkette gruppiert zusammenhängende Rückfragen zu einem Thema.</div>
       </div>
       <div class="chain-meta no-print">
-        <button type="button" class="btnAddQA">Frage/Antwort hinzufügen</button>
         <button type="button" class="btnRemoveChain">Kette entfernen</button>
       </div>
     `;
@@ -405,6 +398,13 @@
         const qaContainer = document.createElement('div');
         qaContainer.className = 'qa-container';
         chain.appendChild(qaContainer);
+
+        let footer = document.createElement('button');
+        footer.type = 'button';
+        footer.className = 'btnAddQA';
+        footer.innerHTML = "Frage/Antwort hinzufügen"
+
+        chain.appendChild(footer);
 
         chain.querySelector('.ctitle').value = presetTitle || '';
 
@@ -416,11 +416,11 @@
             qaContainer.appendChild(createQAItem(chain, 1, '', ''));
         }
 
-        head.querySelector('.btnAddQA').addEventListener('click', () => {
+        chain.querySelector('.btnAddQA').addEventListener('click', () => {
             const next = qaContainer.querySelectorAll('.qa').length + 1;
             qaContainer.appendChild(createQAItem(chain, next, '', ''));
         });
-        head.querySelector('.btnRemoveChain').addEventListener('click', () => chain.remove());
+        chain.querySelector('.btnRemoveChain').addEventListener('click', () => chain.remove());
 
         return chain;
     }
