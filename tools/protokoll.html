@@ -520,7 +520,7 @@
         if (duration != null && start != null) {
             let date = new Date();
             date.setTime(start);
-            document.getElementById("p1Start").value = `${date.getHours()}:${date.getMinutes()}`;
+            document.getElementById("p1Start").value = `${String(date.getHours()()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
             document.getElementById('p1Dur').value   = duration;
         }
         else{
