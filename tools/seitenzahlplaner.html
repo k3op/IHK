@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Seitenzahlplaner für Dokumentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+
+        table {
+            border-collapse: collapse;
+            width: 800px;
+        }
+
+        td, th {
+            border: 0px solid #000;
+            padding: 8px;
+        }
+
+        th {
+            background: #e6e6e6;
+            text-align: left;
+        }
+        
+        .input {
+            background: #cfe8ff;
+        }
+
+        .calc {
+            background: #fcf6c8;
+        }
+        
+        .hint {
+            font-weight: 300;
+            font-size: 0.9em;
+        }
+        
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: right;
+            padding: 4px;
+        }
+
+        @media print {
+            :root {
+                print-color-adjust: exact;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                transform: scale(0.85);
+                transform-origin: top left;
+            }
+            #clearButton {
+                display: none;
+            }
+            .hint {
+                display: none;
+            }
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+        }
+    </style>
+    <link rel="manifest" href="../manifest/pwa/manifest.json" />
+</head>
+
+<body>
+    <a class="hint" href="../index.html">Home</a>
+    <a class="hint" href="dokumentationstool.html">Dokumentationsbewertung</a>
+    <h3>Seitenzahlplaner für Dokumentation</h3>
+
+    <button id="clearButton" onclick="clearInputs()" class="hint">Alle Eingaben leeren</button>
+    <br><br>
+
+    <table>
+        <tr>
+            <th>Dokumentationsbereich</th>
+            <th>Gewichtung</th>
+            <th>Seitenzahl (von 25 max)</th>
+            <th>Tatsächliche Seiten</th>
+            <th>% von aktuell</th>
+            <th>% von maximal</th>
+        </tr>
+
+        <tr>
+            <td>Gesamtseitenzahl der Dokumentation</td>
+            <td></td>
+            <td></td>
+            <td class="input"><input id="totalPages" type="number" min="0" max="100" value="25" tabindex="1"></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>1. Ausgangssituation</td>
+            <td>20% (1/5)</td>
+            <td class="calc"><input id="p1Max" readonly tabindex="-1"></td>
+            <td class="input"><input id="p1Real" type="number" min="0" tabindex="2"></td>
+            <td class="calc"><input id="p1RealPercActual" readonly tabindex="-1"></td>
+            <td class="calc"><input id="p1RealPercMax" readonly tabindex="-1"></td>
+        </tr>
+
+        <tr>
+            <td>2. Ressourcen und Ablaufplanung</td>
+            <td>20% (1/5)</td>
+            <td class="calc"><input id="p2Max" readonly tabindex="-1"></td>
+            <td class="input"><input id="p2Real" type="number" min="0" tabindex="3"></td>
+            <td class="calc"><input id="p2RealPercActual" readonly tabindex="-1"></td>
+            <td class="calc"><input id="p2RealPercMax" readonly tabindex="-1"></td>
+        </tr>
+
+        <tr>
+            <td>3. Durchführung und Auftragsbearbeitung</td>
+            <td>40% (2/5)</td>
+            <td class="calc"><input id="p3Max" readonly tabindex="-1"></td>
+            <td class="input"><input id="p3Real" type="number" min="0" tabindex="4"></td>
+            <td class="calc"><input id="p3RealPercActual" readonly tabindex="-1"></td>
+            <td class="calc"><input id="p3RealPercMax" readonly tabindex="-1"></td>
+        </tr>
+
+        <tr>
+            <td>4. Projektergebnisse</td>
+            <td>20% (1/5)</td>
+            <td class="calc"><input id="p4Max" readonly tabindex="-1"></td>
+            <td class="input"><input id="p4Real" type="number" min="0" tabindex="5"></td>
+            <td class="calc"><input id="p4RealPercActual" readonly tabindex="-1"></td>
+            <td class="calc"><input id="p4RealPercMax" readonly tabindex="-1"></td>
+        </tr>
+
+        <tr style="background: #f0f0f0;">
+            <th>SUMME</th>
+            <th>100% (5/5)</th>
+            <th class="calc"><input id="sumMax" readonly tabindex="-1"></th>
+            <th class="calc"><input id="sumReal" readonly tabindex="-1"></th>
+            <th class="calc"><input id="sumRealPercActual" readonly tabindex="-1"></th>
+            <th class="calc"><input id="sumRealPercMax" readonly tabindex="-1"></th>
+        </tr>
+    </table>
+
+    <br>
+    <table>
+        <tr>
+            <td>
+                <strong>Erklärung:</strong><br>
+                <strong>Seitenzahl (von 25 max):</strong> Empfohlene Seitenzahl, wenn die maximale Gesamtzahl von 25 Seiten genutzt wird<br>
+                <strong>Tatsächliche Seiten:</strong> Die tatsächlich geschriebenen Seiten für diesen Bereich<br>
+                <strong>% von aktuell:</strong> Prozentuale Auslastung der empfohlenen Seitenzahl in relation der tatsächlichen Gesamtseitenzahl<br>
+                <strong>% von maximal:</strong> Prozentuale Auslastung der empfohlenen Seitenzahl (maximal)
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <table>
+        <tr><td>
+            Diese Webseite ist vollständig eigenständig (es werden keine externen JavaScript- oder CSS-Dateien geladen). Die auf dieser Seite eingegebenen Informationen verlassen Ihren Computer NICHT. Für zusätzliche Sicherheit können Sie diese Seite auf Ihrem Computer speichern oder Ihre eigene Kopie von <a href="https://github.com/k3op/ihk" target="_blank">https://github.com/k3op/ihk</a> abrufen.
+        </td></tr>
+        <tr><td>
+            Diese Tools sind Open Source und verfügbar auf <a href="https://github.com/k3op/ihk">GitHub</a>. Lizenziert unter <a href="../LICENSE">GNU GPL v3</a>.
+            <br>
+        </td></tr>
+    </table>
+
+    <script>
+        function num(id) {
+            const v = document.getElementById(id).value;
+            return v === "" ? null : Number(v);
+        }
+
+        function roundCommercialtwodigits(x) {
+            return Math.round(x * 100) / 100;
+        }
+
+        function recalc() {
+            const totalPages = num("totalPages");
+
+            const p1RealValue = num("p1Real");
+            var p1ActualValue;
+            const p1MaxValue = num("p1Max");            
+            // Bereich 1: 20%
+            if (totalPages !== null) {
+                p1ActualValue = roundCommercialtwodigits(totalPages * 0.20);
+            } else {
+                p1ActualValue = "";
+            }
+            p1Max.value = "5.00";
+
+
+            
+            if (p1RealValue !== null && p1ActualValue !== null && p1ActualValue > 0) {
+                p1RealPercActual.value = roundCommercialtwodigits((p1RealValue / p1ActualValue) * 100) + "%";
+            } else {
+                p1RealPercActual.value = "";
+            }
+            
+            if (p1RealValue !== null && p1MaxValue !== null && p1MaxValue > 0) {
+                p1RealPercMax.value = roundCommercialtwodigits((p1RealValue / p1MaxValue) * 100) + "%";
+            } else {
+                p1RealPercMax.value = "";
+            }
+
+            // Bereich 2: 20%
+            const p2RealValue = num("p2Real");
+            var p2ActualValue;
+            const p2MaxValue = num("p2Max");
+            if (totalPages !== null) {
+                p2ActualValue = roundCommercialtwodigits(totalPages * 0.20);
+            } else {
+                p2ActualValue = "";
+            }
+            p2Max.value = "5.00";
+
+
+            
+            if (p2RealValue !== null && p2ActualValue !== null && p2ActualValue > 0) {
+                p2RealPercActual.value = roundCommercialtwodigits((p2RealValue / p2ActualValue) * 100) + "%";
+            } else {
+                p2RealPercActual.value = "";
+            }
+            
+            if (p2RealValue !== null && p2MaxValue !== null && p2MaxValue > 0) {
+                p2RealPercMax.value = roundCommercialtwodigits((p2RealValue / p2MaxValue) * 100) + "%";
+            } else {
+                p2RealPercMax.value = "";
+            }
+
+            // Bereich 3: 40%
+            const p3RealValue = num("p3Real");
+            var p3ActualValue;
+            const p3MaxValue = num("p3Max");
+            if (totalPages !== null) {
+                p3ActualValue = roundCommercialtwodigits(totalPages * 0.40);
+            } else {
+                p3ActualValue = "";
+            }
+            p3Max.value = "10.00";
+
+
+            
+            if (p3RealValue !== null && p3ActualValue !== null && p3ActualValue > 0) {
+                p3RealPercActual.value = roundCommercialtwodigits((p3RealValue / p3ActualValue) * 100) + "%";
+            } else {
+                p3RealPercActual.value = "";
+            }
+            
+            if (p3RealValue !== null && p3MaxValue !== null && p3MaxValue > 0) {
+                p3RealPercMax.value = roundCommercialtwodigits((p3RealValue / p3MaxValue) * 100) + "%";
+            } else {
+                p3RealPercMax.value = "";
+            }
+
+            // Bereich 4: 20%
+            const p4RealValue = num("p4Real");
+            var p4ActualValue;
+            const p4MaxValue = num("p4Max");
+            if (totalPages !== null) {
+                p4ActualValue = roundCommercialtwodigits(totalPages * 0.20);
+            } else {
+                p4ActualValue = "";
+            }
+            p4Max.value = "5.00";
+
+
+            
+            if (p4RealValue !== null && p4ActualValue !== null && p4ActualValue > 0) {
+                p4RealPercActual.value = roundCommercialtwodigits((p4RealValue / p4ActualValue) * 100) + "%";
+            } else {
+                p4RealPercActual.value = "";
+            }
+            
+            if (p4RealValue !== null && p4MaxValue !== null && p4MaxValue > 0) {
+                p4RealPercMax.value = roundCommercialtwodigits((p4RealValue / p4MaxValue) * 100) + "%";
+            } else {
+                p4RealPercMax.value = "";
+            }
+
+            // Summen
+            var sumActualValue;
+            if (totalPages !== null) {
+                sumActualValue = roundCommercialtwodigits(totalPages);
+            } else {
+                sumActualValue = "";
+            }
+            sumMax.value = "25.00";
+
+            const sumRealValue = (num("p1Real") || 0) + (num("p2Real") || 0) + (num("p3Real") || 0) + (num("p4Real") || 0);
+            if (sumRealValue > 0) {
+                sumReal.value = roundCommercialtwodigits(sumRealValue);
+                
+                const sumMaxValue = num("sumMax");
+                
+                if (sumActualValue !== null && sumActualValue > 0) {
+                    sumRealPercActual.value = roundCommercialtwodigits((sumRealValue / sumActualValue) * 100) + "%";
+                } else {
+                    sumRealPercActual.value = "";
+                }
+                
+                if (sumMaxValue !== null && sumMaxValue > 0) {
+                    sumRealPercMax.value = roundCommercialtwodigits((sumRealValue / sumMaxValue) * 100) + "%";
+                } else {
+                    sumRealPercMax.value = "";
+                }
+            } else {
+                sumReal.value = "";
+                sumRealPercActual.value = "";
+                sumRealPercMax.value = "";
+            }
+        }
+
+        // Event listener
+        document.getElementById("totalPages").addEventListener("input", recalc);
+        ["p1Real", "p2Real", "p3Real", "p4Real"].forEach(id =>
+            document.getElementById(id).addEventListener("input", recalc)
+        );
+
+        // Initial calculation
+        recalc();
+
+        function clearInputs() {
+            document.getElementById("totalPages").value = "25";
+            recalc();
+        }
+    </script>
+
+</body>
+</html>
