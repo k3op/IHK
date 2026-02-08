@@ -229,16 +229,11 @@
 
                 <label for="p1Dur">Dauer der Präsentation</label>
                 <input id="p1Dur" type="text" placeholder="z. B. 15:00" title="Beispiel: 15:00, 15.00, 1:00" />
-
-                <label for="p2Start">Beginn des Fachgespräches</label>
-                <input id="p2Start" type="time" />
-
-                <label for="p2Dur">Dauer des Fachgespräches</label>
-                <input id="p2Dur" type="text" placeholder="z. B. 15:00" />
             </div>
             <div class="small no-print" style="margin-top:8px;">
                 Diese Felder werden beim JSON-Export nicht gespeichert.
             </div>
+            <button class="no-print" onclick="loadTimer()">Zeit aus Timer übernehmen</button>
         </div>
     </section>
 
@@ -396,7 +391,6 @@
         <div class="small">Eine Fragenkette gruppiert zusammenhängende Rückfragen zu einem Thema.</div>
       </div>
       <div class="chain-meta no-print">
-        <button type="button" class="btnAddQA">Frage/Antwort hinzufügen</button>
         <button type="button" class="btnRemoveChain">Kette entfernen</button>
       </div>
     `;
@@ -405,6 +399,13 @@
         const qaContainer = document.createElement('div');
         qaContainer.className = 'qa-container';
         chain.appendChild(qaContainer);
+
+        let footer = document.createElement('button');
+        footer.type = 'button';
+        footer.className = 'btnAddQA';
+        footer.innerHTML = "Frage/Antwort hinzufügen"
+
+        chain.appendChild(footer);
 
         chain.querySelector('.ctitle').value = presetTitle || '';
 
@@ -416,11 +417,11 @@
             qaContainer.appendChild(createQAItem(chain, 1, '', ''));
         }
 
-        head.querySelector('.btnAddQA').addEventListener('click', () => {
+        chain.querySelector('.btnAddQA').addEventListener('click', () => {
             const next = qaContainer.querySelectorAll('.qa').length + 1;
             qaContainer.appendChild(createQAItem(chain, next, '', ''));
         });
-        head.querySelector('.btnRemoveChain').addEventListener('click', () => chain.remove());
+        chain.querySelector('.btnRemoveChain').addEventListener('click', () => chain.remove());
 
         return chain;
     }
@@ -511,6 +512,22 @@
         return data;
     }
 
+    function loadTimer()
+    {
+        let start = sessionStorage.getItem("start_time")
+        let duration = sessionStorage.getItem("duration_presentation")
+
+        if (duration != null && start != null) {
+            let date = new Date();
+            date.setTime(start);
+            document.getElementById("p1Start").value = `${String(date.getHours()()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            document.getElementById('p1Dur').value   = duration;
+        }
+        else{
+            alert("Zeit konnte nicht geladen werden.")
+        }
+    }
+
     function applyPreparationJSON(data) {
         if (!data || (data.schema !== "ihk-protokoll-prep-v2" && data.schema !== "ihk-protokoll-prep-v1")) {
             throw new Error("Unbekanntes JSON-Format. Erwartet: ihk-protokoll-prep-v2");
@@ -530,8 +547,6 @@
         // Times are intentionally not imported
         document.getElementById('p1Start').value = "";
         document.getElementById('p1Dur').value = "";
-        document.getElementById('p2Start').value = "";
-        document.getElementById('p2Dur').value = "";
 
         // rebuild chains
         chainsEl.innerHTML = "";
@@ -599,7 +614,6 @@
     });
 
     document.getElementById('p1Dur').addEventListener('input', (element) => { validateDuration(element); });
-    document.getElementById('p2Dur').addEventListener('input', (element) => { validateDuration(element); });
 
     document.getElementById('ioText').addEventListener('drop' , (event) => {
         event.preventDefault();
@@ -612,6 +626,8 @@
         };
         reader.readAsText(file);
     });
+
+
 </script>
 
 </html>
