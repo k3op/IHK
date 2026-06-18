@@ -550,8 +550,11 @@
             // Skip to questinnaire
             duration_presentation = (Date.now() - startTime) / 1000;
 
+            if(document.getElementById("showWarnings"))
+            {
+                if (document.getElementById("showWarnings").checked && !confirm('Präsentation beenden?')) return;
+            }
 
-            if (document.getElementById("showWarnings").checked && !confirm('Präsentation beenden?')) return;
             t_state = 2;
             waitTargetTime = Date.now() + (waitTime * 1000);
             timerBox.classList.add("waiting");
