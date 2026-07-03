@@ -581,7 +581,9 @@
         }
         else if(t_state === 3) {
             // End questionnaire
-            if (document.getElementById("showWarnings").checked && !confirm('Fachgespärch beenden?')) return;
+            if(document.getElementById("showWarnings")) {
+                if (document.getElementById("showWarnings").checked && !confirm('Fachgespärch beenden?')) return;
+            }
             clearInterval(interval_pre);
 
             timerBox.classList.remove("yellow");
